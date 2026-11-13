@@ -24,3 +24,17 @@ async function apiRequest(path, options = {}) {
 async function getPolls() {
   return apiRequest('polls?select=id');
 }
+
+// Создаёт новое голосование (status станет open сам) и возвращает созданную строку с её id.
+async function createPoll(option1, option2, option3) {
+  const rows = await apiRequest('polls', {
+    method: 'POST',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({
+      option_1: option1,
+      option_2: option2,
+      option_3: option3
+    })
+  });
+  return rows[0];
+}

@@ -4,34 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Голосование за чай</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 24px;
-      background: #f7f3e8;
-      color: #000;
-      font-family: system-ui, sans-serif;
-      font-size: 18px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Голосование за чай</h1>
-  <p id="status">Проверяю связь с базой…</p>
+  <main>
+    <!-- Экран 1: форма создания голосования -->
+    <section id="screen-form">
+      <h1>Создать голосование</h1>
+
+      <label for="option_1">Вариант 1</label>
+      <textarea id="option_1" rows="2"></textarea>
+
+      <label for="option_2">Вариант 2</label>
+      <textarea id="option_2" rows="2"></textarea>
+
+      <label for="option_3">Вариант 3</label>
+      <textarea id="option_3" rows="2"></textarea>
+
+      <button id="create-button" type="button">Создать</button>
+      <p id="form-message" class="message" role="alert"></p>
+    </section>
+
+    <!-- Временный экран шага 6: заменится экраном QR в шаге 7 -->
+    <section id="screen-created" hidden>
+      <p id="created-line"></p>
+    </section>
+  </main>
 
   <script src="config.js"></script>
   <script src="api.js"></script>
-  <script>
-    // Временная проверка шага 5: заменится настоящими экранами в шаге 6.
-    const statusLine = document.getElementById('status');
-
-    getPolls()
-      .then(function (polls) {
-        statusLine.textContent = 'Связь с базой работает. Голосований: ' + polls.length;
-      })
-      .catch(function () {
-        statusLine.textContent = 'Нет связи с базой. Проверьте интернет и обновите страницу.';
-      });
-  </script>
+  <script src="host.js"></script>
 </body>
 </html>
