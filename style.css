@@ -76,3 +76,27 @@ textarea:disabled {
   min-height: 1.4em;
   margin: 16px 0 0;
 }
+
+/* Экран QR: квадрат на всю ширину экрана (в пределах полей), чёрный на белом */
+#qr-box {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+#qr-box svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Мелкие тексты вариантов под QR (для самопроверки ведущего) */
+.small {
+  margin: 24px 0 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.small li {
+  margin-bottom: 8px;
+  white-space: pre-wrap;
+}

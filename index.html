@@ -25,14 +25,16 @@
       <p id="form-message" class="message" role="alert"></p>
     </section>
 
-    <!-- Временный экран шага 6: заменится экраном QR в шаге 7 -->
-    <section id="screen-created" hidden>
-      <p id="created-line"></p>
+    <!-- Экран 2: QR. Счётчик и кнопки «Обновить» и «Подсчитать» добавим в шагах 10 и 11 -->
+    <section id="screen-qr" hidden>
+      <div id="qr-box" role="img" aria-label="QR-код для голосования"></div>
+      <ol id="qr-options" class="small"></ol>
     </section>
   </main>
 
   <script src="config.js"></script>
   <script src="api.js"></script>
+  <script src="qrcode.js"></script>
   <script src="host.js"></script>
 </body>
 </html>
