@@ -17,6 +17,21 @@
 </head>
 <body>
   <h1>Голосование за чай</h1>
-  <p>Каркас работает. Страница открылась по HTTPS.</p>
+  <p id="status">Проверяю связь с базой…</p>
+
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // Временная проверка шага 5: заменится настоящими экранами в шаге 6.
+    const statusLine = document.getElementById('status');
+
+    getPolls()
+      .then(function (polls) {
+        statusLine.textContent = 'Связь с базой работает. Голосований: ' + polls.length;
+      })
+      .catch(function () {
+        statusLine.textContent = 'Нет связи с базой. Проверьте интернет и обновите страницу.';
+      });
+  </script>
 </body>
 </html>
