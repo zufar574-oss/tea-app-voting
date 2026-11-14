@@ -52,3 +52,17 @@ async function getPoll(pollId) {
   );
   return rows.length > 0 ? rows[0] : null;
 }
+
+// Отправляет голос. Если голос с этого устройства в этом голосовании уже есть, он заменяется (upsert).
+async function castVote(pollId, deviceId, choice) {
+  await apiRequest('votes?on_conflict=poll_id,device_id', {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({
+      poll_id: pollId,
+      device_id: deviceId,
+      choice: choice,
+      voted_at: new Date().toISOString()
+    })
+  });
+}
