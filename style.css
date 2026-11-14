@@ -154,3 +154,33 @@ textarea:disabled {
   margin-top: 0;
   padding: 12px 20px;
 }
+
+/* «Подсчитать» стоит отдельно от «Обновить»: заметный отступ против случайного нажатия */
+.count-button {
+  margin-top: 48px;
+}
+
+/* Итоги: текст варианта слева, число справа крупно, числа в одной колонке */
+.result-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 2px solid #000;
+}
+
+.result-text {
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.result-number {
+  min-width: 2ch;
+  text-align: right;
+  font-size: 40px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

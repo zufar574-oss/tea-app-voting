@@ -16,6 +16,11 @@ function startHost() {
   const votedCount = document.getElementById('voted-count');
   const refreshButton = document.getElementById('refresh-button');
   const qrMessage = document.getElementById('qr-message');
+  const countButton = document.getElementById('count-button');
+  const screenResults = document.getElementById('screen-results');
+  const resultsList = document.getElementById('results-list');
+  const resultsMessage = document.getElementById('results-message');
+  const resultsRefreshButton = document.getElementById('results-refresh-button');
 
   // Голосование, которое ведёт ведущий (понадобится в следующих шагах)
   let currentPoll = null;
@@ -62,9 +67,18 @@ function startHost() {
     // Для нового голосования счётчик начинается с нуля
     votedCount.textContent = 'Проголосовало: 0';
     qrMessage.textContent = '';
+    setCounting(false);
+    screenResults.hidden = true;
 
     screenForm.hidden = true;
     screenQr.hidden = false;
+  }
+
+  // Пока идёт подсчёт, обе кнопки на экране QR недоступны
+  function setCounting(isCounting) {
+    countButton.disabled = isCounting;
+    refreshButton.disabled = isCounting;
+    countButton.textContent = isCounting ? 'Считаю…' : 'Подсчитать';
   }
 
   // Кнопка «Обновить»: читает голоса и показывает, сколько человек проголосовало
@@ -125,6 +139,73 @@ function startHost() {
     showQrScreen(poll);
   }
 
+  // Рисует три строки итогов: текст варианта и число голосов
+  function renderResults(votes) {
+    const texts = [currentPoll.option_1, currentPoll.option_2, currentPoll.option_3];
+    resultsList.innerHTML = '';
+    texts.forEach(function (text, i) {
+      const choice = i + 1;
+      const count = votes.filter(function (vote) {
+        return Number(vote.choice) === choice;
+      }).length;
+
+      const row = document.createElement('div');
+      row.className = 'result-row';
+
+      const textBox = document.createElement('span');
+      textBox.className = 'result-text';
+      textBox.textContent = text;
+
+      const numberBox = document.createElement('span');
+      numberBox.className = 'result-number';
+      numberBox.textContent = String(count);
+
+      row.appendChild(textBox);
+      row.appendChild(numberBox);
+      resultsList.appendChild(row);
+    });
+  }
+
+  // Читает голоса и показывает итоги. Если не вышло, даёт повторить кнопкой «Обновить».
+  async function loadResults() {
+    resultsMessage.textContent = 'Считаю…';
+    resultsRefreshButton.hidden = true;
+
+    try {
+      const votes = await getVotes(currentPoll.id);
+      renderResults(votes);
+      resultsMessage.textContent = '';
+    } catch (error) {
+      resultsList.innerHTML = '';
+      resultsMessage.textContent = 'Не удалось обновить. Нажмите «Обновить» ещё раз.';
+      resultsRefreshButton.hidden = false;
+    }
+  }
+
+  // Кнопка «Подсчитать»: сначала закрываем голосование, потом считаем голоса
+  async function onCountClick() {
+    if (currentPoll === null) {
+      return;
+    }
+
+    qrMessage.textContent = '';
+    setCounting(true);
+
+    try {
+      await closePoll(currentPoll.id);
+    } catch (error) {
+      // Голосование осталось открытым
+      qrMessage.textContent = 'Не удалось подсчитать. Нажмите «Подсчитать» ещё раз.';
+      setCounting(false);
+      return;
+    }
+
+    // Голосование закрыто: новые голоса уже не придут. Показываем итоги.
+    screenQr.hidden = true;
+    screenResults.hidden = false;
+    await loadResults();
+  }
+
   optionFields.forEach(function (field) {
     field.addEventListener('input', function () {
       field.classList.remove('invalid');
@@ -134,6 +215,8 @@ function startHost() {
 
   createButton.addEventListener('click', onCreateClick);
   refreshButton.addEventListener('click', onRefreshClick);
+  countButton.addEventListener('click', onCountClick);
+  resultsRefreshButton.addEventListener('click', loadResults);
 
   screenForm.hidden = false;
 }

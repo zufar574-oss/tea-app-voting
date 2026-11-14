@@ -71,3 +71,12 @@ async function castVote(pollId, deviceId, choice) {
 async function getVotes(pollId) {
   return apiRequest('votes?poll_id=eq.' + encodeURIComponent(pollId) + '&select=choice');
 }
+
+// Закрывает голосование (status = closed). После этого база не принимает новые голоса.
+async function closePoll(pollId) {
+  await apiRequest('polls?id=eq.' + encodeURIComponent(pollId), {
+    method: 'PATCH',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({ status: 'closed' })
+  });
+}

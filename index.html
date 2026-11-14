@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Голосование за чай</title>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
   <main>
@@ -25,7 +25,7 @@
       <p id="form-message" class="message" role="alert"></p>
     </section>
 
-    <!-- Экран 2: QR, счётчик и «Обновить». «Подсчитать» добавим в шаге 11 -->
+    <!-- Экран 2: QR, счётчик, «Обновить» и «Подсчитать» -->
     <section id="screen-qr" hidden>
       <div id="qr-box" role="img" aria-label="QR-код для голосования"></div>
 
@@ -35,9 +35,18 @@
       </div>
       <p id="qr-message" class="message" role="alert"></p>
 
-      <!-- Здесь в шаге 11 появится кнопка «Подсчитать» (отдельно от «Обновить», с заметным отступом) -->
+      <!-- «Подсчитать» стоит отдельно от «Обновить», с заметным отступом -->
+      <button id="count-button" class="count-button" type="button">Подсчитать</button>
 
       <ol id="qr-options" class="small"></ol>
+    </section>
+
+    <!-- Экран 3: итоги. Кнопку «Новый раунд» добавим в шаге 12 -->
+    <section id="screen-results" hidden>
+      <h1>Итоги</h1>
+      <div id="results-list"></div>
+      <p id="results-message" class="message" role="alert"></p>
+      <button id="results-refresh-button" type="button" hidden>Обновить</button>
     </section>
 
     <!-- Экран 4: страница гостя (адрес с ?poll=<id>) -->
@@ -48,11 +57,11 @@
   </main>
 
   <!-- Номер после ?v= увеличиваем при каждом шаге, чтобы телефон не держал старые файлы -->
-  <script src="config.js?v=10"></script>
-  <script src="api.js?v=10"></script>
-  <script src="qrcode.js?v=10"></script>
-  <script src="host.js?v=10"></script>
-  <script src="guest.js?v=10"></script>
-  <script src="app.js?v=10"></script>
+  <script src="config.js?v=11"></script>
+  <script src="api.js?v=11"></script>
+  <script src="qrcode.js?v=11"></script>
+  <script src="host.js?v=11"></script>
+  <script src="guest.js?v=11"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
