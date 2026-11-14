@@ -13,6 +13,9 @@ function startHost() {
   const screenQr = document.getElementById('screen-qr');
   const qrBox = document.getElementById('qr-box');
   const qrOptions = document.getElementById('qr-options');
+  const votedCount = document.getElementById('voted-count');
+  const refreshButton = document.getElementById('refresh-button');
+  const qrMessage = document.getElementById('qr-message');
 
   // Голосование, которое ведёт ведущий (понадобится в следующих шагах)
   let currentPoll = null;
@@ -56,8 +59,34 @@ function startHost() {
       qrOptions.appendChild(item);
     });
 
+    // Для нового голосования счётчик начинается с нуля
+    votedCount.textContent = 'Проголосовало: 0';
+    qrMessage.textContent = '';
+
     screenForm.hidden = true;
     screenQr.hidden = false;
+  }
+
+  // Кнопка «Обновить»: читает голоса и показывает, сколько человек проголосовало
+  async function onRefreshClick() {
+    if (currentPoll === null) {
+      return;
+    }
+
+    qrMessage.textContent = '';
+    refreshButton.disabled = true;
+    refreshButton.textContent = 'Обновляю…';
+
+    try {
+      const votes = await getVotes(currentPoll.id);
+      votedCount.textContent = 'Проголосовало: ' + votes.length;
+    } catch (error) {
+      // Число остаётся прежним
+      qrMessage.textContent = 'Не удалось обновить. Нажмите «Обновить» ещё раз.';
+    }
+
+    refreshButton.disabled = false;
+    refreshButton.textContent = 'Обновить';
   }
 
   async function onCreateClick() {
@@ -104,6 +133,7 @@ function startHost() {
   });
 
   createButton.addEventListener('click', onCreateClick);
+  refreshButton.addEventListener('click', onRefreshClick);
 
   screenForm.hidden = false;
 }

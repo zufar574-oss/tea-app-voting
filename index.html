@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Голосование за чай</title>
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
   <main>
@@ -25,9 +25,18 @@
       <p id="form-message" class="message" role="alert"></p>
     </section>
 
-    <!-- Экран 2: QR. Счётчик и кнопки «Обновить» и «Подсчитать» добавим в шагах 10 и 11 -->
+    <!-- Экран 2: QR, счётчик и «Обновить». «Подсчитать» добавим в шаге 11 -->
     <section id="screen-qr" hidden>
       <div id="qr-box" role="img" aria-label="QR-код для голосования"></div>
+
+      <div class="counter-row">
+        <p id="voted-count">Проголосовало: 0</p>
+        <button id="refresh-button" type="button">Обновить</button>
+      </div>
+      <p id="qr-message" class="message" role="alert"></p>
+
+      <!-- Здесь в шаге 11 появится кнопка «Подсчитать» (отдельно от «Обновить», с заметным отступом) -->
+
       <ol id="qr-options" class="small"></ol>
     </section>
 
@@ -39,11 +48,11 @@
   </main>
 
   <!-- Номер после ?v= увеличиваем при каждом шаге, чтобы телефон не держал старые файлы -->
-  <script src="config.js?v=9"></script>
-  <script src="api.js?v=9"></script>
-  <script src="qrcode.js?v=9"></script>
-  <script src="host.js?v=9"></script>
-  <script src="guest.js?v=9"></script>
-  <script src="app.js?v=9"></script>
+  <script src="config.js?v=10"></script>
+  <script src="api.js?v=10"></script>
+  <script src="qrcode.js?v=10"></script>
+  <script src="host.js?v=10"></script>
+  <script src="guest.js?v=10"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>

@@ -132,3 +132,25 @@ textarea:disabled {
 .vote-button.selected::before {
   content: '✓ ';
 }
+
+/* Экран QR: счётчик слева, кнопка «Обновить» справа */
+.counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.counter-row p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.counter-row button {
+  width: auto;
+  min-width: 140px;
+  margin-top: 0;
+  padding: 12px 20px;
+}

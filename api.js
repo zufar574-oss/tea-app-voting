@@ -66,3 +66,8 @@ async function castVote(pollId, deviceId, choice) {
     })
   });
 }
+
+// Читает голоса одного голосования. Один голос на устройство, поэтому число строк = число проголосовавших.
+async function getVotes(pollId) {
+  return apiRequest('votes?poll_id=eq.' + encodeURIComponent(pollId) + '&select=choice');
+}
