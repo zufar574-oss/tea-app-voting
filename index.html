@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Голосование за чай</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <main>
     <!-- Экран 1: форма создания голосования -->
-    <section id="screen-form">
+    <section id="screen-form" hidden>
       <h1>Создать голосование</h1>
 
       <label for="option_1">Вариант 1</label>
@@ -30,11 +30,20 @@
       <div id="qr-box" role="img" aria-label="QR-код для голосования"></div>
       <ol id="qr-options" class="small"></ol>
     </section>
+
+    <!-- Экран 4: страница гостя (адрес с ?poll=<id>) -->
+    <section id="screen-guest" hidden>
+      <p id="guest-status" class="center-message" role="status"></p>
+      <div id="guest-options"></div>
+    </section>
   </main>
 
-  <script src="config.js"></script>
-  <script src="api.js"></script>
-  <script src="qrcode.js"></script>
-  <script src="host.js"></script>
+  <!-- Номер после ?v= увеличиваем при каждом шаге, чтобы телефон не держал старые файлы -->
+  <script src="config.js?v=8"></script>
+  <script src="api.js?v=8"></script>
+  <script src="qrcode.js?v=8"></script>
+  <script src="host.js?v=8"></script>
+  <script src="guest.js?v=8"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>

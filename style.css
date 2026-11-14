@@ -100,3 +100,17 @@ textarea:disabled {
   margin-bottom: 8px;
   white-space: pre-wrap;
 }
+
+/* Страница гостя: одно сообщение по центру (загрузка, закрыто, не найдено, ошибка) */
+.center-message {
+  margin: 20vh 0 0;
+  text-align: center;
+  font-size: 22px;
+}
+
+/* Кнопки голосования: все три одного цвета, вертикально, во всю ширину, растут по высоте */
+.vote-button {
+  margin-top: 16px;
+  text-align: left;
+  white-space: pre-wrap;
+}
