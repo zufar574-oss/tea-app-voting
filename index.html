@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Голосование за чай</title>
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
   <main>
@@ -41,12 +41,13 @@
       <ol id="qr-options" class="small"></ol>
     </section>
 
-    <!-- Экран 3: итоги. Кнопку «Новый раунд» добавим в шаге 12 -->
+    <!-- Экран 3: итоги. «Новый раунд» появляется, когда числа загружены -->
     <section id="screen-results" hidden>
       <h1>Итоги</h1>
       <div id="results-list"></div>
       <p id="results-message" class="message" role="alert"></p>
       <button id="results-refresh-button" type="button" hidden>Обновить</button>
+      <button id="new-round-button" type="button" hidden>Новый раунд</button>
     </section>
 
     <!-- Экран 4: страница гостя (адрес с ?poll=<id>) -->
@@ -57,11 +58,11 @@
   </main>
 
   <!-- Номер после ?v= увеличиваем при каждом шаге, чтобы телефон не держал старые файлы -->
-  <script src="config.js?v=11"></script>
-  <script src="api.js?v=11"></script>
-  <script src="qrcode.js?v=11"></script>
-  <script src="host.js?v=11"></script>
-  <script src="guest.js?v=11"></script>
-  <script src="app.js?v=11"></script>
+  <script src="config.js?v=12"></script>
+  <script src="api.js?v=12"></script>
+  <script src="qrcode.js?v=12"></script>
+  <script src="host.js?v=12"></script>
+  <script src="guest.js?v=12"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>

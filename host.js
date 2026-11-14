@@ -21,6 +21,7 @@ function startHost() {
   const resultsList = document.getElementById('results-list');
   const resultsMessage = document.getElementById('results-message');
   const resultsRefreshButton = document.getElementById('results-refresh-button');
+  const newRoundButton = document.getElementById('new-round-button');
 
   // Голосование, которое ведёт ведущий (понадобится в следующих шагах)
   let currentPoll = null;
@@ -170,11 +171,13 @@ function startHost() {
   async function loadResults() {
     resultsMessage.textContent = 'Считаю…';
     resultsRefreshButton.hidden = true;
+    newRoundButton.hidden = true;
 
     try {
       const votes = await getVotes(currentPoll.id);
       renderResults(votes);
       resultsMessage.textContent = '';
+      newRoundButton.hidden = false;
     } catch (error) {
       resultsList.innerHTML = '';
       resultsMessage.textContent = 'Не удалось обновить. Нажмите «Обновить» ещё раз.';
@@ -206,6 +209,36 @@ function startHost() {
     await loadResults();
   }
 
+  // Кнопка «Новый раунд»: возвращаемся к форме, поля заполнены текстами прошлого раунда.
+  // Прошлое голосование остаётся в базе закрытым, новое создаётся кнопкой «Создать».
+  function onNewRoundClick() {
+    if (currentPoll === null) {
+      return;
+    }
+
+    optionFields[0].value = currentPoll.option_1;
+    optionFields[1].value = currentPoll.option_2;
+    optionFields[2].value = currentPoll.option_3;
+    optionFields.forEach(function (field) {
+      field.classList.remove('invalid');
+    });
+    showMessage('');
+    setLoading(false);
+
+    // Забываем прошлый раунд, чтобы кнопки не работали с закрытым голосованием
+    currentPoll = null;
+    resultsList.innerHTML = '';
+    resultsMessage.textContent = '';
+    resultsRefreshButton.hidden = true;
+    newRoundButton.hidden = true;
+
+    screenResults.hidden = true;
+    screenForm.hidden = false;
+
+    // Высота полей подгоняется под текст, когда форма уже видна
+    optionFields.forEach(autoGrow);
+  }
+
   optionFields.forEach(function (field) {
     field.addEventListener('input', function () {
       field.classList.remove('invalid');
@@ -217,6 +250,7 @@ function startHost() {
   refreshButton.addEventListener('click', onRefreshClick);
   countButton.addEventListener('click', onCountClick);
   resultsRefreshButton.addEventListener('click', loadResults);
+  newRoundButton.addEventListener('click', onNewRoundClick);
 
   screenForm.hidden = false;
 }
