@@ -4,25 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Голосование за чай</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <main>
     <!-- Экран 1: форма создания голосования -->
     <section id="screen-form" hidden>
+      <img class="logo" src="logo.png?v=13" alt="Клуб чайной культуры" width="228" height="72">
       <h1>Создать голосование</h1>
 
       <label for="option_1">Вариант 1</label>
-      <textarea id="option_1" rows="2"></textarea>
+      <textarea id="option_1" rows="2" placeholder="Напишите первый вариант…"></textarea>
 
       <label for="option_2">Вариант 2</label>
-      <textarea id="option_2" rows="2"></textarea>
+      <textarea id="option_2" rows="2" placeholder="Напишите второй вариант…"></textarea>
 
       <label for="option_3">Вариант 3</label>
-      <textarea id="option_3" rows="2"></textarea>
+      <textarea id="option_3" rows="2" placeholder="Напишите третий вариант…"></textarea>
 
-      <button id="create-button" type="button">Создать</button>
-      <p id="form-message" class="message" role="alert"></p>
+      <button id="create-button" class="btn-primary" type="button">Создать</button>
+      <p id="form-message" class="error-message" role="alert"></p>
     </section>
 
     <!-- Экран 2: QR, счётчик, «Обновить» и «Подсчитать» -->
@@ -58,11 +62,11 @@
   </main>
 
   <!-- Номер после ?v= увеличиваем при каждом шаге, чтобы телефон не держал старые файлы -->
-  <script src="config.js?v=12"></script>
-  <script src="api.js?v=12"></script>
-  <script src="qrcode.js?v=12"></script>
-  <script src="host.js?v=12"></script>
-  <script src="guest.js?v=12"></script>
-  <script src="app.js?v=12"></script>
+  <script src="config.js?v=13"></script>
+  <script src="api.js?v=13"></script>
+  <script src="qrcode.js?v=13"></script>
+  <script src="host.js?v=13"></script>
+  <script src="guest.js?v=13"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>
