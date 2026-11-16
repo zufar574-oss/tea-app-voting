@@ -54,9 +54,9 @@ async function startGuest(pollId) {
   const STATUS_CLASSES = {
     'loading': 'center-message status-text loading',
     'message': 'center-message big-message',
-    'center-error': 'center-message error-message',
+    'center-error': 'center-message error-message shake',
     'success': 'vote-status success',
-    'error': 'vote-status error-message'
+    'error': 'vote-status error-message shake'
   };
 
   function showStatus(text, kind) {
@@ -99,6 +99,7 @@ async function startGuest(pollId) {
       selectedChoice = choice;
       markSelected();
       showStatus('Голос принят', 'success');
+      replayAnimation(getButtons()[choice - 1], 'pulse'); // выбранная кнопка коротко пульсирует
     } catch (error) {
       // Голос не ушёл. Возможно, ведущий уже закрыл голосование: проверяем.
       let current;

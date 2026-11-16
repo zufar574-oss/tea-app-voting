@@ -522,6 +522,57 @@ button:disabled {
   }
 }
 
+/* ---------- Анимации ошибок и успеха ---------- */
+/* Дрожание блока ошибки: ±4px, 0,36 с */
+.shake {
+  animation: shake 0.36s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+/* Пульс успеха: 1 → 0,98 → 1, 0,32 с */
+.pulse {
+  animation: pulse 0.32s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.counter-row p {
+  transform-origin: left center;
+}
+
+/* Экран получает фокус программно (после смены экрана), но рамки вокруг всего экрана не нужно */
+section:focus {
+  outline: none;
+}
+
 /* ---------- Для тех, кому мешают анимации ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,

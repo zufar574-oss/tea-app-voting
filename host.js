@@ -35,6 +35,9 @@ function startHost() {
 
   function showMessage(text) {
     formMessage.textContent = text;
+    if (text !== '') {
+      replayAnimation(formMessage, 'shake');
+    }
   }
 
   // Пока идёт запрос, поля и кнопка недоступны
@@ -74,6 +77,7 @@ function startHost() {
 
     screenForm.hidden = true;
     screenQr.hidden = false;
+    focusScreen(screenQr);
   }
 
   // Пока идёт подсчёт, обе кнопки на экране QR недоступны
@@ -96,10 +100,16 @@ function startHost() {
 
     try {
       const votes = await getVotes(currentPoll.id);
-      votedCount.textContent = 'Проголосовало: ' + votes.length;
+      const newText = 'Проголосовало: ' + votes.length;
+      const changed = votedCount.textContent !== newText;
+      votedCount.textContent = newText;
+      if (changed) {
+        replayAnimation(votedCount, 'pulse'); // число изменилось: короткий пульс
+      }
     } catch (error) {
       // Число остаётся прежним
       qrMessage.textContent = 'Не удалось обновить. Нажмите «Обновить» ещё раз.';
+      replayAnimation(qrMessage, 'shake');
     }
 
     refreshButton.disabled = false;
@@ -186,6 +196,7 @@ function startHost() {
       resultsList.innerHTML = '';
       resultsMessage.className = 'error-message';
       resultsMessage.textContent = 'Не удалось обновить. Нажмите «Обновить» ещё раз.';
+      replayAnimation(resultsMessage, 'shake');
       resultsRefreshButton.hidden = false;
     }
   }
@@ -204,6 +215,7 @@ function startHost() {
     } catch (error) {
       // Голосование осталось открытым
       qrMessage.textContent = 'Не удалось подсчитать. Нажмите «Подсчитать» ещё раз.';
+      replayAnimation(qrMessage, 'shake');
       setCounting(false);
       return;
     }
@@ -211,6 +223,7 @@ function startHost() {
     // Голосование закрыто: новые голоса уже не придут. Показываем итоги.
     screenQr.hidden = true;
     screenResults.hidden = false;
+    focusScreen(screenResults);
     await loadResults();
   }
 
@@ -239,6 +252,7 @@ function startHost() {
 
     screenResults.hidden = true;
     screenForm.hidden = false;
+    focusScreen(screenForm);
 
     // Высота полей подгоняется под текст, когда форма уже видна
     optionFields.forEach(autoGrow);
