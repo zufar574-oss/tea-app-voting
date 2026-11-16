@@ -15,6 +15,7 @@ function startHost() {
   const qrOptions = document.getElementById('qr-options');
   const votedCount = document.getElementById('voted-count');
   const refreshButton = document.getElementById('refresh-button');
+  const refreshLabel = refreshButton.querySelector('.btn-label');
   const qrMessage = document.getElementById('qr-message');
   const countButton = document.getElementById('count-button');
   const screenResults = document.getElementById('screen-results');
@@ -90,7 +91,8 @@ function startHost() {
 
     qrMessage.textContent = '';
     refreshButton.disabled = true;
-    refreshButton.textContent = 'Обновляю…';
+    refreshButton.classList.add('is-loading'); // иконка вращается
+    refreshLabel.textContent = 'Обновляю…';
 
     try {
       const votes = await getVotes(currentPoll.id);
@@ -101,7 +103,8 @@ function startHost() {
     }
 
     refreshButton.disabled = false;
-    refreshButton.textContent = 'Обновить';
+    refreshButton.classList.remove('is-loading');
+    refreshLabel.textContent = 'Обновить';
   }
 
   async function onCreateClick() {
@@ -169,6 +172,7 @@ function startHost() {
 
   // Читает голоса и показывает итоги. Если не вышло, даёт повторить кнопкой «Обновить».
   async function loadResults() {
+    resultsMessage.className = 'status-text loading';
     resultsMessage.textContent = 'Считаю…';
     resultsRefreshButton.hidden = true;
     newRoundButton.hidden = true;
@@ -180,6 +184,7 @@ function startHost() {
       newRoundButton.hidden = false;
     } catch (error) {
       resultsList.innerHTML = '';
+      resultsMessage.className = 'error-message';
       resultsMessage.textContent = 'Не удалось обновить. Нажмите «Обновить» ещё раз.';
       resultsRefreshButton.hidden = false;
     }

@@ -1,6 +1,6 @@
 /* style.css — внешний вид приложения по гайду «Контекст_дизайн».
    Белый фон, чёрный текст, шрифт Inter. Файл собирается по шагам 14а–14г:
-   сейчас оформлены основа и форма ведущего, остальные экраны получат оформление в 14б и 14в. */
+   сейчас оформлены основа, форма ведущего, экран QR и итоги; страница гостя получит оформление в 14в. */
 
 /* ---------- Палитра ---------- */
 :root {
@@ -206,17 +206,91 @@ button:disabled {
   display: none;
 }
 
-.message {
-  min-height: 1.4em;
-  margin: 16px 0 0;
+/* Вторичная кнопка («Обновить»): контурная, 44px, с иконкой */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
+  min-height: 44px;
+  height: 44px;
+  margin-top: 0;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary);
+  font-weight: 500;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-/* ================= Дальше: пока в прежнем виде, оформим в шагах 14б и 14в ================= */
+.btn-secondary:active:not(:disabled) {
+  transform: scale(0.96);
+}
 
-/* Экран QR: квадрат на всю ширину экрана (в пределах полей), чёрный на белом */
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.btn-secondary .icon {
+  flex: none;
+}
+
+/* Пока идёт запрос, иконка вращается */
+.btn-secondary.is-loading .icon {
+  animation: spin 0.8s linear infinite;
+}
+
+@media (hover: hover) {
+  .btn-secondary:hover:not(:disabled) {
+    background: #f9f9f9;
+    border-color: #d1d5db;
+  }
+}
+
+/* Вторичная кнопка по центру строки (повтор на экране итогов) */
+.btn-secondary.btn-center {
+  display: flex;
+  width: fit-content;
+  margin: 16px auto 0;
+}
+
+/* Нейтральное сообщение («Считаю…»): серый текст по центру, с крутилкой пока идёт запрос */
+.status-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 24px 0 0;
+  color: var(--text-secondary);
+}
+
+.status-text:empty {
+  display: none;
+}
+
+.status-text.loading::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ---------- Экран QR ---------- */
+/* QR чёрный на белом, в тонкой рамке: край виден на белом фоне, белая кайма вокруг QR остаётся */
 #qr-box {
-  max-width: 520px;
+  max-width: 480px;
   margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
 }
 
 #qr-box svg {
@@ -225,17 +299,105 @@ button:disabled {
   height: auto;
 }
 
+/* Счётчик слева, кнопка «Обновить» справа */
+.counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.counter-row p {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* «Подсчитать» стоит отдельно от «Обновить»: заметный отступ против случайного нажатия */
+.count-button {
+  margin-top: 48px;
+}
+
 /* Мелкие тексты вариантов под QR (для самопроверки ведущего) */
 .small {
-  margin: 24px 0 0;
+  margin: 32px 0 0;
   padding-left: 20px;
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 
 .small li {
   margin-bottom: 8px;
   white-space: pre-wrap;
 }
+
+/* ---------- Экран итогов ---------- */
+/* Текст варианта слева, число справа крупно, числа в одной колонке.
+   Строки плавно появляются по очереди; числа не «набегают». */
+.result-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--divider);
+  opacity: 0;
+  animation: result-row-fade-in 0.5s ease-in-out forwards;
+}
+
+.result-row:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.result-row:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.result-row:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.result-text {
+  flex: 1;
+  min-width: 0;
+  color: #1f2937;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.result-number {
+  min-width: 2ch;
+  color: var(--primary);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes result-row-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-row {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ================= Дальше: страница гостя, пока в прежнем виде, оформим в шаге 14в ================= */
 
 /* Страница гостя: одно сообщение по центру (загрузка, закрыто, не найдено, ошибка) */
 .center-message {
@@ -267,58 +429,6 @@ button:disabled {
 
 .vote-button.selected::before {
   content: '✓ ';
-}
-
-/* Экран QR: счётчик слева, кнопка «Обновить» справа */
-.counter-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.counter-row p {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.counter-row button {
-  width: auto;
-  min-width: 140px;
-  margin-top: 0;
-  padding: 12px 20px;
-}
-
-/* «Подсчитать» стоит отдельно от «Обновить»: заметный отступ против случайного нажатия */
-.count-button {
-  margin-top: 48px;
-}
-
-/* Итоги: текст варианта слева, число справа крупно, числа в одной колонке */
-.result-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px 0;
-  border-bottom: 2px solid var(--primary);
-}
-
-.result-text {
-  flex: 1;
-  min-width: 0;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.result-number {
-  min-width: 2ch;
-  text-align: right;
-  font-size: 40px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- Для тех, кому мешают анимации ---------- */
