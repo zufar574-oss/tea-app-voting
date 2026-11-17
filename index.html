@@ -7,13 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
   <main>
     <!-- Экран 1: форма создания голосования -->
     <section id="screen-form" hidden>
-      <img class="logo" src="logo.png?v=16" alt="Клуб чайной культуры" width="228" height="72">
+      <img class="logo" src="logo.png?v=17" alt="Клуб чайной культуры" width="228" height="72">
       <h1>Создать голосование</h1>
 
       <label for="option_1">Вариант 1</label>
@@ -63,16 +63,17 @@
     <!-- Экран 4: страница гостя (адрес с ?poll=<id>) -->
     <section id="screen-guest" hidden>
       <p id="guest-status" class="center-message" role="status"></p>
+      <p id="guest-hint" class="vote-hint" hidden>Нажмите на другой вариант, чтобы изменить выбор</p>
       <div id="guest-options"></div>
     </section>
   </main>
 
   <!-- Номер после ?v= увеличиваем при каждом шаге, чтобы телефон не держал старые файлы -->
-  <script src="config.js?v=16"></script>
-  <script src="api.js?v=16"></script>
-  <script src="qrcode.js?v=16"></script>
-  <script src="host.js?v=16"></script>
-  <script src="guest.js?v=16"></script>
-  <script src="app.js?v=16"></script>
+  <script src="config.js?v=17"></script>
+  <script src="api.js?v=17"></script>
+  <script src="qrcode.js?v=17"></script>
+  <script src="host.js?v=17"></script>
+  <script src="guest.js?v=17"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>

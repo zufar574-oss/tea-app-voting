@@ -32,13 +32,11 @@ function getDeviceId() {
 
 // --- Страница гостя --------------------------------------------------------
 
-// Иконка-галочка (набор Lucide, встроена в страницу)
-const CHECK_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
-
 async function startGuest(pollId) {
   const screenGuest = document.getElementById('screen-guest');
   const guestStatus = document.getElementById('guest-status');
   const guestOptions = document.getElementById('guest-options');
+  const guestHint = document.getElementById('guest-hint');
 
   let poll = null;
   let selectedChoice = null; // подтверждённый выбор: 1, 2, 3 или null
@@ -47,16 +45,17 @@ async function startGuest(pollId) {
   // Сообщение. kind — вид оформления:
   //   'loading'      «Загрузка…» по центру, серым, с крутилкой
   //   'message'      «Голосование закрыто» / «Голосование не найдено»: крупно по центру
-  //   'center-error' «Не удалось загрузить…»: розовый блок по центру
-  //   'success'      «Голос принят»: вверху над кнопками, зелёным
-  //   'error'        «Голос не отправился…»: вверху над кнопками, розовый блок
-  //   ''             сообщения нет
+  //   'center-error' «Не удалось загрузить…»: красный текст по центру
+  //   'success'      «Голос принят»: вверху над кнопками, зелёным, с «попом»
+  //   'error'        «Голос не отправился…»: вверху над кнопками, красный текст
+  //   'reserve'      пустая строка статуса над кнопками (место занято, чтобы кнопки не прыгали)
   const STATUS_CLASSES = {
     'loading': 'center-message status-text loading',
     'message': 'center-message big-message',
-    'center-error': 'center-message error-message shake',
+    'center-error': 'center-message guest-error shake',
     'success': 'vote-status success',
-    'error': 'vote-status error-message shake'
+    'error': 'vote-status guest-error shake',
+    'reserve': 'vote-status'
   };
 
   function showStatus(text, kind) {
@@ -64,7 +63,7 @@ async function startGuest(pollId) {
     void guestStatus.offsetWidth; // сброс, чтобы плавное появление сыграло заново при каждом голосе
     guestStatus.textContent = text;
     guestStatus.className = STATUS_CLASSES[kind] || '';
-    guestStatus.hidden = text === '';
+    guestStatus.hidden = text === '' && kind !== 'reserve';
   }
 
   function getButtons() {
@@ -79,7 +78,7 @@ async function startGuest(pollId) {
     });
   }
 
-  // Рамка и галочка у выбранной кнопки
+  // Выбранная кнопка: светлый фон и зелёная рамка
   function markSelected() {
     getButtons().forEach(function (button) {
       const isSelected = Number(button.dataset.choice) === selectedChoice;
@@ -99,7 +98,7 @@ async function startGuest(pollId) {
       selectedChoice = choice;
       markSelected();
       showStatus('Голос принят', 'success');
-      replayAnimation(getButtons()[choice - 1], 'pulse'); // выбранная кнопка коротко пульсирует
+      guestHint.classList.add('visible'); // подсказка «Нажмите на другой вариант…»
     } catch (error) {
       // Голос не ушёл. Возможно, ведущий уже закрыл голосование: проверяем.
       let current;
@@ -111,9 +110,11 @@ async function startGuest(pollId) {
 
       if (current && current.status === 'closed') {
         guestOptions.innerHTML = '';
+        guestHint.hidden = true;
         showStatus('Голосование закрыто', 'message');
       } else if (current === null) {
         guestOptions.innerHTML = '';
+        guestHint.hidden = true;
         showStatus('Голосование не найдено', 'message');
       } else {
         showStatus('Голос не отправился. Проверьте интернет и нажмите на вариант ещё раз.', 'error');
@@ -144,7 +145,8 @@ async function startGuest(pollId) {
   }
 
   // Голосование открыто: три кнопки с текстом вариантов
-  showStatus('', '');
+  showStatus('', 'reserve');
+  guestHint.hidden = false; // место под подсказку занято, сама она появится после выбора
   guestOptions.innerHTML = '';
   [poll.option_1, poll.option_2, poll.option_3].forEach(function (text, i) {
     const choice = i + 1; // номер варианта: 1, 2 или 3
@@ -153,18 +155,7 @@ async function startGuest(pollId) {
     button.className = 'vote-button';
     button.dataset.choice = String(choice);
     button.setAttribute('aria-pressed', 'false');
-
-    // Галочка (видна только у выбранной кнопки) и текст варианта
-    const checkMark = document.createElement('span');
-    checkMark.className = 'check-mark';
-    checkMark.innerHTML = CHECK_ICON;
-
-    const label = document.createElement('span');
-    label.className = 'button-text';
-    label.textContent = text; // текст вставляем как текст, не как код
-
-    button.appendChild(checkMark);
-    button.appendChild(label);
+    button.textContent = text; // текст вставляем как текст, не как код
     button.addEventListener('click', function () {
       onVoteClick(choice);
     });
