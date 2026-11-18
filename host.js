@@ -17,6 +17,7 @@ function startHost() {
   const refreshButton = document.getElementById('refresh-button');
   const refreshLabel = refreshButton.querySelector('.btn-label');
   const qrMessage = document.getElementById('qr-message');
+  const copyButton = document.getElementById('copy-button');
   const countButton = document.getElementById('count-button');
   const screenResults = document.getElementById('screen-results');
   const resultsList = document.getElementById('results-list');
@@ -65,13 +66,16 @@ function startHost() {
     qrOptions.innerHTML = '';
     [poll.option_1, poll.option_2, poll.option_3].forEach(function (text) {
       const item = document.createElement('li');
-      item.textContent = text;
+      const line = document.createElement('span'); // одна строка, длинный текст обрезается многоточием
+      line.className = 'variant-text';
+      line.textContent = text;
+      item.appendChild(line);
       qrOptions.appendChild(item);
     });
 
     // Для нового голосования счётчик начинается с нуля
     votedCount.textContent = 'Проголосовало: 0';
-    qrMessage.textContent = '';
+    showQrMessage('', false);
     setCounting(false);
     screenResults.hidden = true;
 
@@ -80,10 +84,68 @@ function startHost() {
     focusScreen(screenQr);
   }
 
-  // Пока идёт подсчёт, обе кнопки на экране QR недоступны
+  // Строка статуса под счётчиком: серый текст («Обновлено», «Ссылка скопирована») или красная ошибка.
+  // Серый текст сам исчезает через 3 секунды, ошибка остаётся до следующего действия.
+  let qrMessageTimer = null;
+
+  function showQrMessage(text, isError) {
+    clearTimeout(qrMessageTimer);
+    qrMessage.textContent = text;
+    qrMessage.className = isError ? 'qr-status is-error' : 'qr-status';
+    qrMessage.setAttribute('role', isError ? 'alert' : 'status');
+    if (isError) {
+      replayAnimation(qrMessage, 'shake');
+    } else if (text !== '') {
+      qrMessageTimer = setTimeout(function () {
+        qrMessage.textContent = '';
+      }, 3000);
+    }
+  }
+
+  // Копирует текст в буфер обмена. Если современный способ не сработал, пробуем запасной.
+  async function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return;
+      } catch (error) {
+        // не вышло, пробуем запасной способ ниже
+      }
+    }
+
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    area.setSelectionRange(0, text.length);
+    const copied = document.execCommand('copy');
+    document.body.removeChild(area);
+    if (!copied) {
+      throw new Error('Не удалось скопировать');
+    }
+  }
+
+  // Кнопка «Скопировать ссылку»: копирует ссылку для гостей (адрес страницы + ?poll=<id>)
+  async function onCopyClick() {
+    if (currentPoll === null) {
+      return;
+    }
+    try {
+      await copyText(makeGuestLink(currentPoll.id));
+      showQrMessage('Ссылка скопирована', false);
+    } catch (error) {
+      showQrMessage('Не удалось скопировать ссылку.', true);
+    }
+  }
+
+  // Пока идёт подсчёт, кнопки на экране QR недоступны
   function setCounting(isCounting) {
     countButton.disabled = isCounting;
     refreshButton.disabled = isCounting;
+    copyButton.disabled = isCounting;
     countButton.textContent = isCounting ? 'Считаю…' : 'Подсчитать';
   }
 
@@ -93,23 +155,19 @@ function startHost() {
       return;
     }
 
-    qrMessage.textContent = '';
+    showQrMessage('', false);
     refreshButton.disabled = true;
-    refreshButton.classList.add('is-loading'); // иконка вращается
+    refreshButton.classList.add('is-loading'); // вместо иконки крутится кружок
     refreshLabel.textContent = 'Обновляю…';
 
     try {
       const votes = await getVotes(currentPoll.id);
-      const newText = 'Проголосовало: ' + votes.length;
-      const changed = votedCount.textContent !== newText;
-      votedCount.textContent = newText;
-      if (changed) {
-        replayAnimation(votedCount, 'pulse'); // число изменилось: короткий пульс
-      }
+      votedCount.textContent = 'Проголосовало: ' + votes.length;
+      replayAnimation(votedCount, 'counter-pulse'); // при каждом обновлении счётчик коротко пульсирует
+      showQrMessage('Обновлено', false);
     } catch (error) {
       // Число остаётся прежним
-      qrMessage.textContent = 'Не удалось обновить. Нажмите «Обновить» ещё раз.';
-      replayAnimation(qrMessage, 'shake');
+      showQrMessage('Не удалось обновить. Нажмите «Обновить» ещё раз.', true);
     }
 
     refreshButton.disabled = false;
@@ -207,15 +265,14 @@ function startHost() {
       return;
     }
 
-    qrMessage.textContent = '';
+    showQrMessage('', false);
     setCounting(true);
 
     try {
       await closePoll(currentPoll.id);
     } catch (error) {
       // Голосование осталось открытым
-      qrMessage.textContent = 'Не удалось подсчитать. Нажмите «Подсчитать» ещё раз.';
-      replayAnimation(qrMessage, 'shake');
+      showQrMessage('Не удалось подсчитать. Нажмите «Подсчитать» ещё раз.', true);
       setCounting(false);
       return;
     }
@@ -267,6 +324,7 @@ function startHost() {
 
   createButton.addEventListener('click', onCreateClick);
   refreshButton.addEventListener('click', onRefreshClick);
+  copyButton.addEventListener('click', onCopyClick);
   countButton.addEventListener('click', onCountClick);
   resultsRefreshButton.addEventListener('click', loadResults);
   newRoundButton.addEventListener('click', onNewRoundClick);
